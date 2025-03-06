@@ -1,1 +1,0 @@
-const String baseUrl = "https://app.ticketmaster.com/discovery/v2/events.json";
