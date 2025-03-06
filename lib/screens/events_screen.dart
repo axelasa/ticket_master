@@ -9,7 +9,6 @@ import 'package:ticket_master/screens/events_detail_screen.dart';
 import 'package:ticket_master/widget/app_toast.dart';
 import 'package:ticket_master/widget/screen_title.dart';
 import 'package:ticket_master/widget/time_stamp.dart';
-
 import '../models/all_events_entity.dart';
 
 class EventsScreen extends StatefulWidget {
@@ -21,11 +20,40 @@ class EventsScreen extends StatefulWidget {
 
 class _EventsScreenState extends State<EventsScreen> {
   String api = "";
+  final ScrollController _scrollController = ScrollController();
+  final List<dynamic> _events = []; // Holds paginated event data
+  int _currentPage = 0; // Keeps track of the current page
+  bool _isFetching = false; // Prevents multiple fetch calls
 
   @override
   void initState() {
     super.initState();
-    allEventsData(api);
+    _fetchEvents();
+    _scrollController.addListener(_onScroll);
+  }
+
+  // Fetch events when scrolling reaches the bottom
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 100 &&
+        !_isFetching) {
+      _fetchEvents();
+    }
+  }
+
+  // Function to fetch events with pagination
+  void _fetchEvents() async {
+    setState(() {
+      _isFetching = true;
+    });
+
+    Map<String, dynamic> params = {
+      "apikey": apikey,
+      "page": _currentPage,
+      "size": 20, // 20 items per request
+    };
+
+    BlocProvider.of<AllEventsCubit>(context).fetchAllEventsData(params);
   }
 
   @override
@@ -36,105 +64,101 @@ class _EventsScreenState extends State<EventsScreen> {
         padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
         child: SafeArea(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ScreenTitle(
-                title: 'Available Events',
-              ),
-              SizedBox(
-                height: 30,
-              ),
+              ScreenTitle(title: 'Available Events'),
+              SizedBox(height: 30),
               Expanded(
-                child: BlocBuilder<AllEventsCubit, AllEventsState>(
-                  builder: (context, state) {
-                    if (state is AllEventsLoading) {
-                      return Center(
-                        child: SpinKitSpinningLines(color: Colors.tealAccent),
-                      );
-                    }
-                    if (state is AllEventsError) {
-                      SchedulerBinding.instance.addPostFrameCallback((_) {
-                        showSnackBar(
-                            context: context,
-                            message: "Something went Wrong",
-                            title: "OOPS",
-                            contentType: ContentType.failure);
-                      });
-                      return Text(
-                        "Error, ${state.error}",
-                        style: const TextStyle(
-                          color: Colors.red,
-                        ),
-                      );
-                    }
+                child: BlocListener<AllEventsCubit, AllEventsState>(
+                  listener: (context, state) {
                     if (state is AllEventsSuccess) {
-                      AllEventsEntity data = state.events;
-                      var events = data.embedded?.events;
+                      setState(() {
+                        _events.addAll(state.events.embedded?.events ?? []);
+                        _currentPage++;
+                        _isFetching = false;
+                      });
+
                       SchedulerBinding.instance.addPostFrameCallback((_) {
                         showSnackBar(
                           context: context,
-                          message: 'Success',
+                          message: 'Loaded More Events',
                           title: 'Success',
                           contentType: ContentType.success,
                         );
                       });
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: events?.length,
-                        itemBuilder: (c, i) {
-                          var event = events?[i];
-                          String image = '';
-                          Object location = {};
-                          if (event != null && event.embedded?.venues != null) {
-                            for (var venue in event.embedded!.venues!) {
-                              if (venue?.location != null) {
-                                var lat = venue!.location!.latitude!;
-                                var lon = venue.location!.longitude!;
-                                location = "$lat,$lon";
-                                break; // Assuming you want the first location
-                              }
-                            }
-                          }
-                          if (event != null && event.images != null) {
-                            for (var images in event.images!) {
-                              if (images?.url != null) {
-                                image = images!.url!;
-                                break; // Assuming you want the first location
-                              }
-                            }
-                          }
-                          var date = event!.dates!.start!.dateTime != null
-                              ? formattedDateTime(DateTime.parse(event.dates!.start!.dateTime!))
-                              : "No date available";
-                          return GestureDetector(
-                            onTap: (){
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>EventsDetailScreen(imageUrl: image, name: event.name!, date: date, ticketLink: '',)));
-                            },
-                            child: Card(
-                              child: ListTile(
-                                leading: SizedBox(
-                                  height: 100,
-                                  width: 100,
-                                  child: Image.network(image),
-                                ),
-                                title: Text(event.name ?? ""),
-                                subtitle: Column(
-                                  children: [
-                                    Text(date),
-                                    Text('$location'),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      );
                     }
-                    return SizedBox.shrink();
+
+                    if (state is AllEventsError) {
+                      setState(() => _isFetching = false);
+
+                      SchedulerBinding.instance.addPostFrameCallback((_) {
+                        showSnackBar(
+                          context: context,
+                          message: "Error: ${state.error}",
+                          title: "OOPS",
+                          contentType: ContentType.failure,
+                        );
+                      });
+                    }
                   },
+                  child: _events.isEmpty && _isFetching
+                      ? Center(child: SpinKitSpinningLines(color: Colors.tealAccent))
+                      : ListView.builder(
+                    controller: _scrollController,
+                    itemCount: _events.length + (_isFetching ? 1 : 0),
+                    itemBuilder: (context, i) {
+                      if (i == _events.length) {
+                        return Center(child: CircularProgressIndicator());
+                      }
+
+                      var event = _events[i];
+                      String image = event.images?.first?.url ?? "";
+                      String date = event.dates?.start?.dateTime != null
+                          ? formattedDateTime(DateTime.parse(event.dates!.start!.dateTime!))
+                          : "No date available";
+                      String location = "";
+
+                      if (event.embedded?.venues != null) {
+                        var venue = event.embedded!.venues!.first;
+                        if (venue?.location != null) {
+                          location = "${venue!.country.name},\n ${venue.city.name}, ${venue.address.line1}";
+                        }
+                      }
+
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => EventsDetailScreen(
+                              imageUrl: image,
+                              name: event.name!,
+                              date: date,
+                              location:location,
+                              ticketLink: event!.url,
+                              promoter: event!.promoter.name, limit: event!.ticketLimit.info,
+                            ),
+                          ));
+                        },
+                        child: Card(
+                          child: ListTile(
+                            leading: SizedBox(
+                              height: 130,
+                              width: 100,
+                              child: Image.network(image),
+                            ),
+                            title: Text(event.name ?? ""),
+                            subtitle: Column(
+                              children: [
+                                Text(date),
+                                Text(location),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -142,10 +166,9 @@ class _EventsScreenState extends State<EventsScreen> {
     );
   }
 
-  void allEventsData(String api) {
-    Map<String, dynamic> api = {
-      "apikey": apikey,
-    };
-    BlocProvider.of<AllEventsCubit>(context).fetchAllEventsData(api);
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 }

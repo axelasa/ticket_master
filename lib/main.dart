@@ -18,7 +18,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -36,7 +35,7 @@ class MyApp extends StatelessWidget {
         home: const EventsScreen(),
         routes: {
           '/events_screen.dart':(context)=>EventsScreen(),
-          '/events_detail_screen.dart':(context)=>EventsDetailScreen(imageUrl: '', name: '', date: '', ticketLink: '',),
+          '/events_detail_screen.dart':(context)=>EventsDetailScreen(imageUrl: '', name: '', date: '', ticketLink: '', location: '', promoter: '', limit: '',),
         },
       ),
     );
