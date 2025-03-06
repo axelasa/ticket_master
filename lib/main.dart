@@ -20,7 +20,7 @@ void main() async {
   runApp(
     //TODO: Insert API KEY HERE
     const EventsApplication(
-      ticketMasterApiKey: 'eq4X5AgfxXcj4R854Oa3cBK6SC0EEcsb',
+      ticketMasterApiKey: '[API_KEY]',
     ),
   );
 }
