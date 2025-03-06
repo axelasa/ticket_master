@@ -4,6 +4,7 @@ part 'local_models.g.dart';
 
 @HiveType(typeId: 0)
 class LocalEventModel {
+
   @HiveField(0)
   final String id;
 
@@ -22,6 +23,9 @@ class LocalEventModel {
   @HiveField(5)
   final String? venue;
 
+  @HiveField(6)
+  final String url;
+
   LocalEventModel({
     required this.id,
     required this.thumbnailImageUrl,
@@ -29,5 +33,6 @@ class LocalEventModel {
     required this.name,
     required this.utcDate,
     required this.venue,
+    required this.url,
   });
 }

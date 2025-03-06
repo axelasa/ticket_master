@@ -9,13 +9,14 @@ import 'package:ticket_master/data/service/local_database/local_database.dart';
 import 'package:ticket_master/data/service/networking/ticket_master_api.dart';
 import 'package:ticket_master/presentation/routes/app_routes.dart';
 import 'package:ticket_master/presentation/theme/themes.dart';
-import 'package:timezone/browser.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(LocalEventModelAdapter());
 
-  await initializeTimeZone();
+  tz.initializeTimeZones();
+
   runApp(
     //TODO: Insert API KEY HERE
     const EventsApplication(

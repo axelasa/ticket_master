@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:ticket_master/data/exceptions/error_handler.dart';
 import 'package:ticket_master/data/models/dto_models/dto_models.dart';

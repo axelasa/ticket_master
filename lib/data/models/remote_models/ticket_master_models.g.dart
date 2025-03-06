@@ -45,8 +45,10 @@ _$CreateTicketMasterEventImpl _$$CreateTicketMasterEventImplFromJson(
               (e) => TicketMasterEventImage.fromJson(e as Map<String, dynamic>))
           .toList(),
       dates: EventDate.fromJson(json['dates'] as Map<String, dynamic>),
-      embeddedData: TicketMasterEventEmbeddedData.fromJson(
-          json['_embedded'] as Map<String, dynamic>),
+      embeddedData: json['_embedded'] == null
+          ? null
+          : TicketMasterEventEmbeddedData.fromJson(
+              json['_embedded'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$CreateTicketMasterEventImplToJson(

@@ -33,7 +33,7 @@ class TicketMasterEvent with _$TicketMasterEvent {
     required String url,
     required List<TicketMasterEventImage> images,
     required EventDate dates,
-    @JsonKey(name: "_embedded") required TicketMasterEventEmbeddedData embeddedData,
+    @JsonKey(name: "_embedded") TicketMasterEventEmbeddedData? embeddedData,
   }) = _CreateTicketMasterEvent;
 
   factory TicketMasterEvent.fromJson(Map<String, dynamic> json) => _$TicketMasterEventFromJson(json);

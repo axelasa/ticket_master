@@ -40,8 +40,8 @@ class EventsRemoteRepositoryImpl extends EventsRemoteRepository {
           return Result.error(failure: ticketResult.failure);
       }
     } catch (e, trace) {
-      debugPrint(e.toString());
-      debugPrint(trace.toString());
+      print(e.toString());
+      print(trace.toString());
       return Result.error(failure: ErrorHandler(e.toString()));
     }
   }

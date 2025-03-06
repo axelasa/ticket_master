@@ -2,12 +2,13 @@ import 'package:intl/intl.dart';
 import 'package:ticket_master/data/models/local_models/local_models.dart';
 import 'package:ticket_master/data/models/remote_models/ticket_master_models.dart';
 import 'package:collection/collection.dart';
-import 'package:timezone/timezone.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 class EventModel {
   final String id;
   final String thumbnailImageUrl;
   final String fullImageUrl;
+  final String url;
   final String name;
   final DateTime? utcDate;
   final String? venue;
@@ -16,6 +17,7 @@ class EventModel {
     required this.id,
     required this.thumbnailImageUrl,
     required this.fullImageUrl,
+    required this.url,
     required this.name,
     required this.utcDate,
     required this.venue,
@@ -28,8 +30,9 @@ extension TicketMasterX on TicketMasterEvent {
         thumbnailImageUrl: orderedFromSmallestImages.first.url,
         fullImageUrl: orderedFromSmallestImages.last.url,
         name: name,
+        url: url,
         utcDate: eventUtcDate,
-        venue: embeddedData.venues.firstOrNull?.summary,
+        venue: embeddedData?.venues.firstOrNull?.summary,
       );
 
   DateTime? get eventUtcDate {
@@ -42,8 +45,8 @@ extension TicketMasterX on TicketMasterEvent {
     String? timezone = dates.timezone;
     if (timezone == null) return d;
 
-    Location location = getLocation(timezone);
-    return TZDateTime.parse(location, dateTime).toUtc();
+    tz.Location location = tz.getLocation(timezone);
+    return tz.TZDateTime.parse(location, dateTime).toUtc();
   }
 
   List<TicketMasterEventImage> get orderedFromSmallestImages => images.sorted((a, b) => (a.width * a.height).compareTo(b.width * b.height));
@@ -75,6 +78,7 @@ extension LocalEventModelX on EventModel {
     name: name,
     utcDate: utcDate,
     venue: venue,
+    url: url,
   );
 }
 
@@ -84,6 +88,7 @@ extension EventModelX on LocalEventModel {
     id: id,
     thumbnailImageUrl: thumbnailImageUrl,
     fullImageUrl: fullImageUrl,
+    url: url,
     name: name,
     utcDate: utcDate,
     venue: venue,

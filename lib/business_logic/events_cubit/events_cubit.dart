@@ -32,7 +32,7 @@ class EventsCubit extends Cubit<EventsState> {
         super(const EventsState.loadedEvents());
 
   Future<void> fetchLocalEvents() async {
-    if (state is EventsLoadedState) return;
+    if (state is EventsLoadingState) return;
 
     try {
       emit(EventsLoadingState(events: []));
@@ -45,6 +45,7 @@ class EventsCubit extends Cubit<EventsState> {
 
       List<LocalEventModel> localEvents = (localEventsResult as Success<List<LocalEventModel>>).data;
       if(localEvents.isEmpty) {
+        emit(EventsLoadedState());
         fetchRemoteEvents(page: AtomicPage());
         return;
       }

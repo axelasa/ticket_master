@@ -23,13 +23,14 @@ class LocalEventModelAdapter extends TypeAdapter<LocalEventModel> {
       name: fields[3] as String,
       utcDate: fields[4] as DateTime?,
       venue: fields[5] as String?,
+      url: fields[6] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, LocalEventModel obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -41,7 +42,9 @@ class LocalEventModelAdapter extends TypeAdapter<LocalEventModel> {
       ..writeByte(4)
       ..write(obj.utcDate)
       ..writeByte(5)
-      ..write(obj.venue);
+      ..write(obj.venue)
+      ..writeByte(6)
+      ..write(obj.url);
   }
 
   @override

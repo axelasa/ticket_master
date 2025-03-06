@@ -1,7 +1,10 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ticket_master/business_logic/models/event_models.dart';
+import 'package:ticket_master/presentation/components/app_toast.dart';
 import 'package:ticket_master/presentation/components/screen_title.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EventsDetailScreen extends StatefulWidget {
   final EventModel eventModel;
@@ -18,23 +21,15 @@ class _EventsDetailScreenState extends State<EventsDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(event.name),
+      ),
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 20,
-            ),
-            IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(Icons.arrow_back_ios),
-            ),
-            SizedBox(
-              height: 5,
-            ),
+
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
@@ -79,7 +74,6 @@ class _EventsDetailScreenState extends State<EventsDetailScreen> {
                         ),
                       ),
                     ),
-
                     Visibility(
                       visible: event.venue != null,
                       child: Padding(
@@ -99,15 +93,24 @@ class _EventsDetailScreenState extends State<EventsDetailScreen> {
                     SizedBox(
                       height: 10,
                     ),
-                    /*Text(
-                      "Buy your Tickets Here: ${widget.ticketLink}",
-                      style: GoogleFonts.italianno(
-                          textStyle: TextStyle(
-                        color: Colors.blueAccent,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                      )),
-                    ),*/
+                    ElevatedButton(
+                      onPressed: () async {
+                        try {
+                          Uri uri = Uri.parse(event.url);
+                          await launchUrl(uri);
+                        } catch (e) {
+                          if(context.mounted) {
+                          showSnackBar(
+                            context: context,
+                            message: 'Failed to open url',
+                            title: 'Failed',
+                            contentType: ContentType.failure,
+                          );
+                          }
+                        }
+                      },
+                      child: Text("Buy Ticket"),
+                    ),
                     SizedBox(
                       height: 10,
                     ),

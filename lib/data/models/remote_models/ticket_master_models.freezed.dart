@@ -387,7 +387,7 @@ mixin _$TicketMasterEvent {
   List<TicketMasterEventImage> get images => throw _privateConstructorUsedError;
   EventDate get dates => throw _privateConstructorUsedError;
   @JsonKey(name: "_embedded")
-  TicketMasterEventEmbeddedData get embeddedData =>
+  TicketMasterEventEmbeddedData? get embeddedData =>
       throw _privateConstructorUsedError;
 
   /// Serializes this TicketMasterEvent to a JSON map.
@@ -412,10 +412,10 @@ abstract class $TicketMasterEventCopyWith<$Res> {
       String url,
       List<TicketMasterEventImage> images,
       EventDate dates,
-      @JsonKey(name: "_embedded") TicketMasterEventEmbeddedData embeddedData});
+      @JsonKey(name: "_embedded") TicketMasterEventEmbeddedData? embeddedData});
 
   $EventDateCopyWith<$Res> get dates;
-  $TicketMasterEventEmbeddedDataCopyWith<$Res> get embeddedData;
+  $TicketMasterEventEmbeddedDataCopyWith<$Res>? get embeddedData;
 }
 
 /// @nodoc
@@ -438,7 +438,7 @@ class _$TicketMasterEventCopyWithImpl<$Res, $Val extends TicketMasterEvent>
     Object? url = null,
     Object? images = null,
     Object? dates = null,
-    Object? embeddedData = null,
+    Object? embeddedData = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -461,10 +461,10 @@ class _$TicketMasterEventCopyWithImpl<$Res, $Val extends TicketMasterEvent>
           ? _value.dates
           : dates // ignore: cast_nullable_to_non_nullable
               as EventDate,
-      embeddedData: null == embeddedData
+      embeddedData: freezed == embeddedData
           ? _value.embeddedData
           : embeddedData // ignore: cast_nullable_to_non_nullable
-              as TicketMasterEventEmbeddedData,
+              as TicketMasterEventEmbeddedData?,
     ) as $Val);
   }
 
@@ -482,8 +482,12 @@ class _$TicketMasterEventCopyWithImpl<$Res, $Val extends TicketMasterEvent>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $TicketMasterEventEmbeddedDataCopyWith<$Res> get embeddedData {
-    return $TicketMasterEventEmbeddedDataCopyWith<$Res>(_value.embeddedData,
+  $TicketMasterEventEmbeddedDataCopyWith<$Res>? get embeddedData {
+    if (_value.embeddedData == null) {
+      return null;
+    }
+
+    return $TicketMasterEventEmbeddedDataCopyWith<$Res>(_value.embeddedData!,
         (value) {
       return _then(_value.copyWith(embeddedData: value) as $Val);
     });
@@ -505,12 +509,12 @@ abstract class _$$CreateTicketMasterEventImplCopyWith<$Res>
       String url,
       List<TicketMasterEventImage> images,
       EventDate dates,
-      @JsonKey(name: "_embedded") TicketMasterEventEmbeddedData embeddedData});
+      @JsonKey(name: "_embedded") TicketMasterEventEmbeddedData? embeddedData});
 
   @override
   $EventDateCopyWith<$Res> get dates;
   @override
-  $TicketMasterEventEmbeddedDataCopyWith<$Res> get embeddedData;
+  $TicketMasterEventEmbeddedDataCopyWith<$Res>? get embeddedData;
 }
 
 /// @nodoc
@@ -532,7 +536,7 @@ class __$$CreateTicketMasterEventImplCopyWithImpl<$Res>
     Object? url = null,
     Object? images = null,
     Object? dates = null,
-    Object? embeddedData = null,
+    Object? embeddedData = freezed,
   }) {
     return _then(_$CreateTicketMasterEventImpl(
       id: null == id
@@ -555,10 +559,10 @@ class __$$CreateTicketMasterEventImplCopyWithImpl<$Res>
           ? _value.dates
           : dates // ignore: cast_nullable_to_non_nullable
               as EventDate,
-      embeddedData: null == embeddedData
+      embeddedData: freezed == embeddedData
           ? _value.embeddedData
           : embeddedData // ignore: cast_nullable_to_non_nullable
-              as TicketMasterEventEmbeddedData,
+              as TicketMasterEventEmbeddedData?,
     ));
   }
 }
@@ -572,7 +576,7 @@ class _$CreateTicketMasterEventImpl implements _CreateTicketMasterEvent {
       required this.url,
       required final List<TicketMasterEventImage> images,
       required this.dates,
-      @JsonKey(name: "_embedded") required this.embeddedData})
+      @JsonKey(name: "_embedded") this.embeddedData})
       : _images = images;
 
   factory _$CreateTicketMasterEventImpl.fromJson(Map<String, dynamic> json) =>
@@ -596,7 +600,7 @@ class _$CreateTicketMasterEventImpl implements _CreateTicketMasterEvent {
   final EventDate dates;
   @override
   @JsonKey(name: "_embedded")
-  final TicketMasterEventEmbeddedData embeddedData;
+  final TicketMasterEventEmbeddedData? embeddedData;
 
   @override
   String toString() {
@@ -647,7 +651,7 @@ abstract class _CreateTicketMasterEvent implements TicketMasterEvent {
           required final List<TicketMasterEventImage> images,
           required final EventDate dates,
           @JsonKey(name: "_embedded")
-          required final TicketMasterEventEmbeddedData embeddedData}) =
+          final TicketMasterEventEmbeddedData? embeddedData}) =
       _$CreateTicketMasterEventImpl;
 
   factory _CreateTicketMasterEvent.fromJson(Map<String, dynamic> json) =
@@ -665,7 +669,7 @@ abstract class _CreateTicketMasterEvent implements TicketMasterEvent {
   EventDate get dates;
   @override
   @JsonKey(name: "_embedded")
-  TicketMasterEventEmbeddedData get embeddedData;
+  TicketMasterEventEmbeddedData? get embeddedData;
 
   /// Create a copy of TicketMasterEvent
   /// with the given fields replaced by the non-null parameter values.
