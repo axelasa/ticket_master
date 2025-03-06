@@ -9,9 +9,9 @@ class SearchEventsCubit extends Cubit<SearchEventsState> {
   final ApiService apiService;
   SearchEventsCubit(this.apiService) : super(SearchEventsInitial());
 
-  void searchEventsData(Map<String,dynamic>api){
+  void searchEventsData(Map<String,dynamic>keyword){
     emit(SearchEventsLoading());
-    apiService.searchEventsByKeyWord(api).then((value){
+    apiService.searchEventsByKeyWord(keyword).then((value){
       emit(SearchEventsSuccess(value));
     }).onError((error,stackTrace){
       emit(SearchEventsError(error));

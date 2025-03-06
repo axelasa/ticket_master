@@ -10,6 +10,7 @@ import 'package:ticket_master/widget/app_toast.dart';
 import 'package:ticket_master/widget/screen_title.dart';
 import 'package:ticket_master/widget/time_stamp.dart';
 import '../models/all_events_entity.dart';
+import '../widget/app_color.dart';
 
 class EventsScreen extends StatefulWidget {
   const EventsScreen({super.key});
@@ -99,16 +100,25 @@ class _EventsScreenState extends State<EventsScreen> {
                           contentType: ContentType.failure,
                         );
                       });
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(state.error),
+                            duration: const Duration(seconds: 10),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      });
                     }
                   },
                   child: _events.isEmpty && _isFetching
-                      ? Center(child: SpinKitSpinningLines(color: Colors.tealAccent))
+                      ? Center(child: SpinKitSpinningLines(color: AppColors.mainColor))
                       : ListView.builder(
                     controller: _scrollController,
                     itemCount: _events.length + (_isFetching ? 1 : 0),
                     itemBuilder: (context, i) {
                       if (i == _events.length) {
-                        return Center(child: CircularProgressIndicator());
+                        return Center(child:  SpinKitSpinningLines(color: AppColors.mainColor));
                       }
 
                       var event = _events[i];
@@ -134,7 +144,8 @@ class _EventsScreenState extends State<EventsScreen> {
                               date: date,
                               location:location,
                               ticketLink: event!.url,
-                              promoter: event!.promoter.name, limit: event!.ticketLimit.info,
+                              promoter: event!.promoter.name,
+                              limit: event!.ticketLimit.info,
                             ),
                           ));
                         },

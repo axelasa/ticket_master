@@ -4,9 +4,12 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:ticket_master/cubit/all_events_cubit.dart';
 import 'package:ticket_master/cubit/search_events_cubit.dart';
+import 'package:ticket_master/home.dart';
 import 'package:ticket_master/network/repository/event_repository.dart';
 import 'package:ticket_master/screens/events_detail_screen.dart';
 import 'package:ticket_master/screens/events_screen.dart';
+import 'package:ticket_master/screens/search_event_detail_screen.dart';
+import 'package:ticket_master/screens/search_events_screen.dart';
 
 void main() async {
   await Hive.initFlutter();
@@ -32,10 +35,12 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const EventsScreen(),
+        home: const HomePage(),
         routes: {
           '/events_screen.dart':(context)=>EventsScreen(),
+          '/search_events_screen.dart':(context)=>SearchEventsScreen(),
           '/events_detail_screen.dart':(context)=>EventsDetailScreen(imageUrl: '', name: '', date: '', ticketLink: '', location: '', promoter: '', limit: '',),
+          '/search_event_detail_screen.dart':(context)=>SearchEventsDetailScreen(imageUrl: '', name: '', date: '', ticketLink: '', location: '', promoter: '', limit: '',),
         },
       ),
     );
