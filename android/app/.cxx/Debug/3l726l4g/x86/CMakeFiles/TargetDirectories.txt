@@ -1,2 +1,0 @@
-/home/vnsjaowmfaa/Projects/personal/ticket_master/android/app/.cxx/Debug/3l726l4g/x86/CMakeFiles/edit_cache.dir
-/home/vnsjaowmfaa/Projects/personal/ticket_master/android/app/.cxx/Debug/3l726l4g/x86/CMakeFiles/rebuild_cache.dir
